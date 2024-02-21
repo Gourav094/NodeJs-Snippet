@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 
 app.get('/timer', (req, res) => {
     delay(5000)
-    res.send(`checking timer ${process.pid}`)
+    res.send(`beep beep beep... ${process.pid}`)
 })
 
 console.log('running server file')
