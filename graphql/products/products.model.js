@@ -13,7 +13,8 @@
         {
             id:'blue jeans',
             description: 'blue jeans for men',
-            price: 800
+            price: 800,
+            reviews:[]
         }
     ]
 
@@ -33,8 +34,34 @@ function getProductsById(id){
     })
 }
 
+function addNewProduct(id,description,price){
+    const product = {
+        id,
+        description,
+        price,
+        reviews:[]
+    }
+    products.push(product)
+    return product
+}
+
+function addNewProductReview(id,rating,comment){
+    const product = getProductsById(id)
+    // console.log(product)
+    if(product){
+        const newReview = {
+            rating,
+            comment
+        }    
+        product.reviews.push(newReview)
+        return newReview
+    }
+}
+
 module.exports = {
     getAllProducts,
     getProductsByPrice,
     getProductsById,
+    addNewProduct,
+    addNewProductReview
 }
