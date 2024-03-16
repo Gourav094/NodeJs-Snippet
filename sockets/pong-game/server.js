@@ -13,7 +13,7 @@ io.on('connection',(socket) => {
     socket.on('ready',() => {
         console.log('player is ready..')
         connectedPlayer++
-        if(connectedPlayer == 2){
+        if(connectedPlayer % 2 === 0){
             console.log('Lets start the game')
             io.emit('startGame',socket.id)
         }
@@ -25,5 +25,9 @@ io.on('connection',(socket) => {
 
     socket.on('moveBall',(position) => {
         socket.broadcast.emit('moveBall',position)
+    })
+
+    socket.on('disconnect',(reason) => {
+        console.log(`Client ${socket.id} disconnected : `,reason)
     })
 })
