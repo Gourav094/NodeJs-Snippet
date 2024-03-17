@@ -1,13 +1,14 @@
 let connectedPlayer = 0
 function listen(io) {
-    io.on('connection', (socket) => {
+    const pongNamespace = io.of('/pong')
+    pongNamespace.on('connection', (socket) => {
         console.log('player connected ', socket.id)
         socket.on('ready', () => {
             console.log('player is ready..')
             connectedPlayer++
             if (connectedPlayer % 2 === 0) {
                 console.log('Lets start the game')
-                io.emit('startGame', socket.id)
+                pongNamespace.emit('startGame', socket.id)
             }
         })
 
