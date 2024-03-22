@@ -25,7 +25,7 @@ const AUTH_OPTIONS = {
 }
 
 function verifyCallback(accessToken, refreshToken, profile, done) {
-    console.log('Goggle take us back after authentication',profile)
+    console.log('Goggle take us back after authentication')
     done(null, profile)
 }
 
@@ -79,10 +79,13 @@ app.get('/auth/google/callback',
     })
 
 //for logout
-app.get('/auth/logout', (req, res) => { })
+app.get('/auth/logout', (req, res) => { 
+    req.logout()
+    return res.redirect('/')
+})
 
 app.get('/secret', checkLogin, (req, res) => {
-    res.send('Your secret value is 2003')
+    return res.send('Your secret value is 2003')
 })
 
 app.get('/failure', (req, res) => {
