@@ -5,6 +5,7 @@ const helmet = require('helmet')
 const path = require('path')
 const passport = require('passport')
 const { Strategy } = require('passport-google-oauth20')
+const cookieSession = require('cookie-session')
 require('dotenv').config()
 const app = express()
 
@@ -12,7 +13,9 @@ const PORT = 3000
 
 const config = {
     CLIENT_ID: process.env.CLIENT_ID,
-    CLIENT_SECRET: process.env.CLIENT_SECRET
+    CLIENT_SECRET: process.env.CLIENT_SECRET,
+    SECRET_KEY1: process.env.SECRET_KEY1,
+    SECRET_KEY2: process.env.SECRET_KEY2
 }
 
 const AUTH_OPTIONS = {
@@ -28,12 +31,29 @@ function verifyCallback(accessToken, refreshToken, profile, done) {
 
 passport.use(new Strategy(AUTH_OPTIONS, verifyCallback))
 
+passport.serializeUser((user,done) => {
+    done(null,user.id)
+})
+
+passport.deserializeUser((obj,done) => {
+    done(null,obj)
+})
+
+
 app.use(helmet())
 
+app.use(cookieSession({
+    name:"session",
+    maxAge: 24 * 60 * 60 * 1000,
+    keys: [config.SECRET_KEY1,config.SECRET_KEY2]
+}))
+
 app.use(passport.initialize())
+app.use(passport.session())
 
 function checkLogin(req, res, next) {
-    const Login = true
+    console.log("current user",req.user)
+    const Login = req.isAuthenticated && req.user
     if (!Login) {
         return res.status(401).json({
             error: "You need to login !!"
@@ -52,7 +72,7 @@ app.get('/auth/google/callback',
     passport.authenticate('google', {
         successRedirect: '/',
         failureRedirect: '/failure',
-        session: false
+        session: true
     }),
     (req, res) => {
         console.log('authorization successfully done by google')
